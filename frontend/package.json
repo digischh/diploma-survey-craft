@@ -1,0 +1,76 @@
+{
+  "name": "data-craft-hack",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@emotion/react": "^11.13.3",
+    "@emotion/styled": "^11.13.0",
+    "@mui/icons-material": "^6.1.5",
+    "@mui/material": "^6.1.5",
+    "@testing-library/jest-dom": "^5.17.0",
+    "@testing-library/react": "^13.4.0",
+    "@testing-library/user-event": "^13.5.0",
+    "@types/jest": "^27.5.2",
+    "@types/node": "^16.18.115",
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "chart.js": "^4.4.5",
+    "chartjs-node-canvas": "^4.1.6",
+    "chartjs-to-image": "^1.2.2",
+    "docx": "^9.0.2",
+    "file-saver": "^2.0.5",
+    "html2canvas": "^1.4.1",
+    "i18next": "^23.16.4",
+    "jspdf": "^2.5.2",
+    "papaparse": "^5.4.1",
+    "pptxgenjs": "^3.12.0",
+    "rc-slider": "^11.1.7",
+    "react": "^18.3.1",
+    "react-beautiful-dnd": "^13.1.1",
+    "react-chartjs-2": "^5.2.0",
+    "react-color": "^2.19.3",
+    "react-colorful": "^5.6.1",
+    "react-dom": "^18.3.1",
+    "react-grid-layout": "^1.5.0",
+    "react-icons": "^5.3.0",
+    "react-router-dom": "^6.27.0",
+    "react-scripts": "5.0.1",
+    "react-toastify": "^10.0.6",
+    "typescript": "^4.9.5",
+    "uuid": "^11.0.3",
+    "web-vitals": "^2.1.4"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "@types/css-modules": "^1.0.5",
+    "@types/file-saver": "^2.0.7",
+    "@types/papaparse": "^5.3.15",
+    "@types/react-beautiful-dnd": "^13.1.8",
+    "@types/react-color": "^3.0.13",
+    "@types/react-grid-layout": "^1.3.5",
+    "@types/uuid": "^10.0.0"
+  }
+}

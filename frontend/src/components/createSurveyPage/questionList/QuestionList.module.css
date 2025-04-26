@@ -1,0 +1,170 @@
+.questions {
+  margin-top: 20px;
+}
+
+.questionBlock {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  margin: 10px;
+}
+
+.icontButton {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  background-color: #f9f9f9;
+  position: relative;
+  cursor: pointer;
+}
+
+.icontButton svg {
+  font-size: 15px;
+}
+
+.questionBlock {
+  display: flex;
+  gap: 10px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  background-color: #f9f9f9;
+  padding: 20px;
+}
+
+.title {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.icons {
+  display: flex;
+  gap: 8px;
+  position: absolute;
+  top: 8px;
+  right: 8px;
+}
+
+.choiceOptions {
+  display: flex;
+  gap: 70px;
+}
+
+.customCheckboxContainer {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.customCheckbox {
+  position: relative;
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+}
+
+.customCheckbox input {
+  position: absolute;
+  opacity: 0;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+  z-index: 2;
+}
+
+.customCheckbox .checkmark {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 18px;
+  height: 18px;
+  border: 2px solid var(--accent);
+  border-radius: 4px;
+  background-color: white;
+}
+
+.customCheckbox input:checked ~ .checkmark {
+  background-color: var(--accent);
+}
+
+.customCheckbox .checkmark:after {
+  content: "";
+  position: absolute;
+  display: none;
+  left: 5px;
+  width: 5px;
+  height: 10px;
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+.customCheckbox input:checked ~ .checkmark:after {
+  display: block;
+}
+
+.recentButton {
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  background-color: #f9f9f9;
+  position: relative;
+  cursor: pointer;
+}
+
+.recentButton svg {
+  font-size: 18px;
+}
+
+.recentButton:hover {
+  background-color: #ccc;
+}
+
+.customRadio {
+  position: relative;
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+}
+
+.customRadio input {
+  position: absolute;
+  opacity: 0;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+  z-index: 2;
+}
+
+.customRadio .radiomark {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 18px;
+  height: 18px;
+  border: 2px solid var(--accent);
+  border-radius: 50%;
+  background-color: white;
+  box-sizing: border-box;
+}
+
+.customRadio input:checked ~ .radiomark {
+  background-color: white;
+}
+
+.customRadio .radiomark:after {
+  content: "";
+  position: absolute;
+  display: none;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+
+.customRadio input:checked ~ .radiomark:after {
+  display: block;
+}
