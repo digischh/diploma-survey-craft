@@ -51,12 +51,12 @@
 }
 
 .leftSide {
-  flex: 0 1 65%;
+  flex: 0 1 55%;
   padding-right: 20px;
 }
 
 .rightSide {
-  flex: 0 1 30%;
+  flex: 0 1 40%;
   padding-left: 20px;
   border-left: 1px solid #ccc;
   padding-top: 10px;

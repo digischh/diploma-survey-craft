@@ -43,5 +43,10 @@ module.exports = (surveyController) => {
   router.post("/questions/:questionId/copy", (req, res) => {
     surveyController.copyQuestion(req, res);
   });
+
+  router.post("/answers", (req, res) => {
+    surveyController.saveSurveyAnswers(req, res);
+  });
+
   return router;
 };

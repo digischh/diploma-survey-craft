@@ -145,7 +145,7 @@ class SurveyController {
             question_text || "",
             question_type || "",
             is_required,
-            answer_type || null,
+            answer_type || "single",
             feature_description || null,
           ]
         );
@@ -214,7 +214,7 @@ class SurveyController {
         question_text,
         question_type,
         is_required,
-        answer_type || null,
+        answer_type || "single",
         feature_description || null,
         questionId,
       ]);
@@ -500,6 +500,39 @@ class SurveyController {
 
       console.error("Ошибка при копировании вопроса:", err);
       res.status(500).json({ message: "Ошибка при копировании вопроса" });
+    } finally {
+      client.release();
+    }
+  }
+
+  // Сохранение ответов
+  async saveSurveyAnswers(req, res) {
+    const { preparedAnswers } = req.body;
+    const client = await this.db.connect();
+
+    try {
+      await client.query("BEGIN");
+
+      const insertQuery = `
+      INSERT INTO survey_answers (survey_id, question_id, question_type, answer)
+      VALUES ($1, $2, $3, $4)
+    `;
+
+      for (const answer of preparedAnswers) {
+        await client.query(insertQuery, [
+          answer.surveyId,
+          answer.questionId,
+          answer.questionType,
+          JSON.stringify(answer.answer),
+        ]);
+      }
+
+      await client.query("COMMIT");
+      res.status(200).json({ message: "Ответы успешно сохранены" });
+    } catch (err) {
+      await client.query("ROLLBACK");
+      console.error("Ошибка при сохранении ответов:", err);
+      res.status(500).json({ message: "Ошибка при сохранении ответов" });
     } finally {
       client.release();
     }

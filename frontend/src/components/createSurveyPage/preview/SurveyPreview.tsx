@@ -1,10 +1,12 @@
 import React, { useState } from "react";
-import Slider from "rc-slider";
-import "rc-slider/assets/index.css";
 import styles from "./SurveyPreview.module.css";
-import { Question } from "../../../types/types";
+import { AnswerFeedback, Question } from "../../../types/types";
+import TestQuestionPreview from "./TestQuestionPreview";
+import NpsQuestionPreview from "./NpsQuestionPreview";
+import FeedbackQuestionPreview from "./FeedbackQuestionPreview";
 
 interface SurveyPreviewProps {
+  surveyId: string | undefined;
   surveyTitle: string;
   surveyDescription: string;
   questions: Question[];
@@ -26,6 +28,7 @@ interface SurveyPreviewProps {
 }
 
 const SurveyPreview: React.FC<SurveyPreviewProps> = ({
+  surveyId,
   surveyTitle,
   surveyDescription,
   questions,
@@ -48,11 +51,86 @@ const SurveyPreview: React.FC<SurveyPreviewProps> = ({
   const [ratings, setRatings] = useState<number[]>(
     Array(questions.length).fill(5)
   );
+  const [feedbackAnswers, setFeedbackAnswers] = useState<{
+    [index: number]: { positive?: number; negative?: number };
+  }>({});
 
   const handleRatingChange = (index: number, value: number) => {
     const updatedRatings = [...ratings];
     updatedRatings[index] = value;
     setRatings(updatedRatings);
+  };
+
+  const handleFeedbackAnswerChange = (
+    idx: number,
+    questionId: number,
+    answer: AnswerFeedback
+  ) => {
+    setFeedbackAnswers((prev) => {
+      const newAnswers = { ...prev };
+      if (!newAnswers[idx]) newAnswers[idx] = {};
+      if (questionId === 0) newAnswers[idx].positive = answer.priority;
+      else newAnswers[idx].negative = answer.priority;
+      return newAnswers;
+    });
+  };
+
+  const [testAnswers, setTestAnswers] = useState<{
+    [index: number]: string[] | string;
+  }>({});
+
+  const handleTestAnswerChange = (idx: number, selected: string[] | string) => {
+    setTestAnswers((prev) => ({
+      ...prev,
+      [idx]: selected,
+    }));
+  };
+
+  const handleSubmit = async () => {
+    try {
+      console.log("testAnswers", testAnswers, ratings, feedbackAnswers);
+      const preparedAnswers = questions
+        .map((q, idx) => {
+          if (q.question_type === "nps") {
+            return {
+              surveyId: surveyId,
+              questionId: q.id,
+              questionType: "nps",
+              answer: ratings[idx],
+            };
+          } else if (q.question_type === "feedback") {
+            return {
+              surveyId: surveyId,
+              questionId: q.id,
+              questionType: "feedback",
+              answer: feedbackAnswers[idx] || "",
+            };
+          } else if (q.question_type === "test") {
+            return {
+              surveyId: surveyId,
+              questionId: q.id,
+              questionType: "test",
+              answer: testAnswers[idx] || [],
+            };
+          }
+        })
+        .filter(Boolean);
+
+      const response = await fetch("http://localhost:8080/api/answers", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ preparedAnswers }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Ошибка при отправке ответов");
+      }
+    } catch (error) {
+      console.error("Ошибка отправки:", error);
+    } finally {
+    }
   };
 
   return (
@@ -82,90 +160,66 @@ const SurveyPreview: React.FC<SurveyPreviewProps> = ({
         }}>
         {surveyDescription}
       </div>
+
       {questions.map((question, idx) => (
         <div key={idx} className={styles.questionBlock}>
-          <div className={styles.questionNumber}>Вопрос {idx + 1}:</div>
-          <div className={styles.questionText}>{question.question_text}</div>
-
-          {question.options &&
-            (question.answer_type === "multiple" ||
-              question.answer_type === "single") && (
-              <div className={styles.optionsContainer}>
-                <div>Выберите ответ:</div>
-                <div style={{ marginLeft: "10px" }}>
-                  {question.options.map((option) => (
-                    <div className={styles.customCheckboxContainer}>
-                      {question.answer_type === "multiple" ? (
-                        <div
-                          className={styles.customCheckbox}
-                          style={
-                            {
-                              "--bg-color": backgroundColor,
-                              "--border-color": buttonColor,
-                              "--border-check-color": textColor,
-                            } as React.CSSProperties
-                          }>
-                          <input type="checkbox" />
-                          <span className={styles.checkmark}></span>
-                        </div>
-                      ) : (
-                        <div
-                          className={styles.customRadio}
-                          style={
-                            {
-                              "--bg-color": backgroundColor,
-                              "--border-color": buttonColor,
-                              "--border-check-color": textColor,
-                            } as React.CSSProperties
-                          }>
-                          <input
-                            type="radio"
-                            name={`question-${question.id}`}
-                          />
-                          <span className={styles.radiomark}></span>
-                        </div>
-                      )}
-                      <span>{option.text}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-          {question.answer_type === "text" && <input></input>}
           {question.question_type === "nps" && (
-            <div className={styles.npsContainer}>
-              <div>Оцените по шкале от 1 до 10:</div>
-              <div className={styles.rangeContainer}>
-                <Slider
-                  min={1}
-                  max={10}
-                  value={ratings[idx]}
-                  onChange={(value: any) => handleRatingChange(idx, value)}
-                  marks={{
-                    1: "1",
-                    2: "2",
-                    3: "3",
-                    4: "4",
-                    5: "5",
-                    6: "6",
-                    7: "7",
-                    8: "8",
-                    9: "9",
-                    10: "10",
-                  }}
-                  step={1}
-                  trackStyle={{ backgroundColor: buttonColor }}
-                  handleStyle={{
-                    borderColor: buttonColor,
-                    backgroundColor: buttonColor,
-                  }}
-                  railStyle={{ backgroundColor: "#ccc" }}
-                />
+            <>
+              <div className={styles.questionNumber}>Вопрос {idx + 1}:</div>
+              <div className={styles.questionText}>
+                {question.question_text}
               </div>
-            </div>
+              <NpsQuestionPreview
+                rating={ratings[idx]}
+                onRatingChange={(value) => handleRatingChange(idx, value)}
+                buttonColor={buttonColor}
+                textColor={textColor}
+              />
+            </>
+          )}
+          {question.question_type === "test" && (
+            <>
+              <div className={styles.questionNumber}>Вопрос {idx + 1}:</div>
+              <div className={styles.questionText}>
+                {question.question_text}
+              </div>
+              <TestQuestionPreview
+                question={question}
+                backgroundColor={backgroundColor}
+                buttonColor={buttonColor}
+                textColor={textColor}
+                selectedOptions={
+                  question.answer_type === "text"
+                    ? testAnswers[idx] || ""
+                    : testAnswers[idx] || []
+                }
+                onOptionChange={(selected) =>
+                  handleTestAnswerChange(idx, selected)
+                }
+                onTextChange={(text) => handleTestAnswerChange(idx, text)}
+              />
+            </>
+          )}
+          {question.question_type === "feedback" && (
+            <>
+              <div className={styles.questionNumber}>Функция {idx + 1}:</div>
+              <FeedbackQuestionPreview
+                key={idx}
+                backgroundColor={backgroundColor}
+                buttonColor={buttonColor}
+                textColor={textColor}
+                featureTitle={question.question_text}
+                featureDescription={question.feature_description}
+                selectedAnswers={feedbackAnswers[idx] || {}}
+                onAnswerChange={(qId, ans) =>
+                  handleFeedbackAnswerChange(idx, qId, ans)
+                }
+              />
+            </>
           )}
         </div>
       ))}
+
       <div className={styles.buttons}>
         {currentPage > 1 && (
           <button
@@ -181,6 +235,14 @@ const SurveyPreview: React.FC<SurveyPreviewProps> = ({
             style={{ backgroundColor: buttonColor, color: buttonTextColor }}
             className={styles.button}>
             Далее
+          </button>
+        )}
+        {currentPage === totalPages && (
+          <button
+            onClick={handleSubmit}
+            style={{ backgroundColor: buttonColor, color: buttonTextColor }}
+            className={styles.button}>
+            Отправить
           </button>
         )}
       </div>

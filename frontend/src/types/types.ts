@@ -5,7 +5,7 @@ export interface Question {
   is_required?: boolean;
   options?: Array<{
     is_correct: any;
-    id?: string;
+    id: string;
     text: string;
   }>;
   correctAnswers?: number[];
@@ -19,3 +19,15 @@ export interface AnswerOption {
   text: string;
   is_correct?: boolean;
 }
+
+export interface AnswerFeedback {
+  id: number;
+  title: string;
+  priority: number;
+}
+
+export type QuestionFeedback = {
+  id: number;
+  title: string;
+  answers: AnswerFeedback[];
+};

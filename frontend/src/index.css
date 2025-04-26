@@ -4,8 +4,8 @@
 
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -27,7 +27,7 @@ body {
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
 
@@ -86,12 +86,11 @@ option:hover {
   background-color: var(--opacity-accent);
 }
 
-
 :root {
   --background: #ffffff;
-  --border-color: #D9D9D9;
-  --text-primary: #0D0D0D;
-  --accent: #0D0097;
+  --border-color: #d9d9d9;
+  --text-primary: #0d0d0d;
+  --accent: #0d0097;
   --text-accent: #ffffff;
 }
 
@@ -123,19 +122,18 @@ option:hover {
 }
 
 input {
-  width: 100%; 
-  padding: 10px; 
-  border: 1px solid #ccc; 
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
   border-radius: 5px;
-  font-size: 16px; 
-  box-sizing: border-box; 
+  font-size: 16px;
+  box-sizing: border-box;
 }
 
 input:focus {
   border-color: var(--accent);
-  outline: none; 
+  outline: none;
 }
-
 
 input[type="text"] {
   width: 500px;

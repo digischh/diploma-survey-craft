@@ -1,0 +1,117 @@
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.featureTitle {
+  font-size: 20px;
+  font-weight: 600;
+  margin-right: 10px;
+}
+
+.toggleDescriptionButton {
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  padding: 0;
+  transition: transform 0.3s ease, color 0.3s ease;
+  color: var(--border-color);
+}
+
+.toggleDescriptionButton.open {
+  transform: rotate(0deg);
+}
+
+.toggleDescriptionButton:hover {
+  color: var(--border-color);
+  opacity: 0.5;
+}
+
+.featureDescription {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease-out;
+  font-size: 16px;
+  padding: 10px 0 0 5px;
+}
+
+.featureDescription.open {
+  max-height: 1000px;
+  transition: max-height 0.3s ease-in;
+}
+
+.questionBlock {
+  margin-top: 20px;
+}
+
+.questionTitle {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.answers {
+  margin-top: 10px;
+}
+
+.answerContanier {
+  display: flex;
+  gap: 10px;
+  flex-direction: row;
+  align-items: center;
+}
+.answerLabel {
+  margin: 5px;
+  font-size: 14px;
+}
+
+.customRadio {
+  position: relative;
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+}
+
+.customRadio input {
+  position: absolute;
+  opacity: 0;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+  z-index: 2;
+}
+
+.customRadio .radiomark {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 18px;
+  height: 18px;
+  border: 2px solid var(--border-color);
+  border-radius: 50%;
+  background-color: white;
+  box-sizing: border-box;
+}
+
+.customRadio input:checked ~ .radiomark {
+  background-color: var(--bg-color);
+}
+
+.customRadio .radiomark:after {
+  content: "";
+  position: absolute;
+  display: none;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--border-color);
+}
+
+.customRadio input:checked ~ .radiomark:after {
+  display: block;
+}
+

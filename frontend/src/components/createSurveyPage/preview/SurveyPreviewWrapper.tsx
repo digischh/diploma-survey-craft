@@ -141,6 +141,7 @@ const SurveyPreviewWrapper = () => {
 
   return (
     <SurveyPreview
+      surveyId={surveyId}
       surveyTitle={surveyTitle}
       surveyDescription={surveyDescription}
       questions={currentQuestions}

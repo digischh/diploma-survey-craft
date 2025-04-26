@@ -267,6 +267,7 @@ const SurveyCreatorPage: React.FC = () => {
             id: uuidv4(),
             question_text: questionToCopy.question_text + " (копия)",
             options: questionToCopy.options?.map((opt) => ({
+              id: uuidv4(),
               text: opt.text,
               is_correct: opt.is_correct,
             })),
@@ -414,6 +415,7 @@ const SurveyCreatorPage: React.FC = () => {
 
           <div className={styles.rightSide}>
             <SurveyPreview
+              surveyId={surveyId}
               surveyTitle={surveyTitle}
               surveyDescription={surveyDescription}
               questions={currentQuestions}

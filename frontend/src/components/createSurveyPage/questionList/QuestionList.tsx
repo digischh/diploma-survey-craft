@@ -1,7 +1,9 @@
 import React from "react";
 import styles from "./QuestionList.module.css";
 import { MdContentCopy, MdDeleteOutline } from "react-icons/md";
-import { Question } from "../../../types/types";
+import { Question } from "../../../types";
+import TestQuestion from "./TestQuestion";
+import FeedbackQuestion from "./FeedbackQuestion";
 const { v4: uuidv4 } = require("uuid");
 
 interface QuestionListProps {
@@ -46,7 +48,7 @@ const QuestionList: React.FC<QuestionListProps> = ({
           ...q,
           options: [
             ...(q.options || []),
-            { text: "Новый вариант", is_correct: false },
+            { id: uuidv4(), text: "Новый вариант", is_correct: false },
           ],
         };
       })
@@ -70,6 +72,7 @@ const QuestionList: React.FC<QuestionListProps> = ({
       )
     );
   };
+
   return (
     <div className={styles.questions}>
       <button onClick={handleAddQuestion} className="primary-button">
@@ -92,137 +95,20 @@ const QuestionList: React.FC<QuestionListProps> = ({
           </div>
 
           {question.question_type === "test" && (
-            <>
-              <div className={styles.choiceOptions}>
-                <div className={styles.customCheckboxContainer}>
-                  <div>Обязательный:</div>
-                  <div className={styles.customCheckbox}>
-                    <input
-                      type="checkbox"
-                      checked={question.is_required || false}
-                      onChange={(e) =>
-                        handleEditQuestion(
-                          question.id,
-                          "is_required",
-                          e.target.checked
-                        )
-                      }
-                    />
-                    <span className={styles.checkmark}></span>
-                  </div>
-                </div>
-                <div className={styles.customCheckboxContainer}>
-                  <div>Тип ответа:</div>
-                  <select
-                    value={question.answer_type || "single"}
-                    onChange={(e) =>
-                      handleEditQuestion(
-                        question.id,
-                        "answer_type",
-                        e.target.value
-                      )
-                    }>
-                    <option value="single">Одиночный</option>
-                    <option value="multiple">Множественный</option>
-                    <option value="text">Текст</option>
-                  </select>
-                </div>
-              </div>
-              {question.answer_type !== "text" && (
-                <div style={{ gap: "8px", display: "grid" }}>
-                  <div className={styles.title}>Варианты ответа:</div>
-                  {question.options?.map((option, index) => (
-                    <div key={index} className={styles.customCheckboxContainer}>
-                      {question.answer_type === "single" ? (
-                        <div className={styles.customRadio}>
-                          <input
-                            type="radio"
-                            name={`correct-${question.id}`}
-                            checked={question.correctAnswers?.[0] === index}
-                            onChange={(e) =>
-                              setQuestions((prev) =>
-                                prev.map((q) =>
-                                  q.id === question.id
-                                    ? { ...q, correctAnswers: [index] }
-                                    : q
-                                )
-                              )
-                            }
-                          />
-                          <span className={styles.radiomark}></span>
-                        </div>
-                      ) : (
-                        <div className={styles.customCheckbox}>
-                          <input
-                            type="checkbox"
-                            checked={
-                              question.correctAnswers?.includes(index) || false
-                            }
-                            onChange={(e) =>
-                              setQuestions((prev) =>
-                                prev.map((q) => {
-                                  if (q.id === question.id) {
-                                    const isChecked = e.target.checked;
-                                    const updatedAnswers = isChecked
-                                      ? [...(q.correctAnswers || []), index]
-                                      : q.correctAnswers?.filter(
-                                          (i) => i !== index
-                                        );
-                                    return {
-                                      ...q,
-                                      correctAnswers: updatedAnswers,
-                                    };
-                                  }
-                                  return q;
-                                })
-                              )
-                            }
-                          />
-                          <span className={styles.checkmark}></span>
-                        </div>
-                      )}
-                      <input
-                        type="text"
-                        value={option.text}
-                        onChange={(e) =>
-                          handleOptionChange(question.id, index, e.target.value)
-                        }
-                      />
-                      <button
-                        onClick={() => handleRemoveOption(question.id, index)}
-                        className={styles.recentButton}>
-                        <MdDeleteOutline />
-                      </button>
-                    </div>
-                  ))}
-                  <button
-                    className="primary-button"
-                    onClick={() => handleAddOption(question.id)}>
-                    Добавить вариант
-                  </button>
-                </div>
-              )}
-            </>
+            <TestQuestion
+              question={question}
+              handleEditQuestion={handleEditQuestion}
+              handleOptionChange={handleOptionChange}
+              handleAddOption={handleAddOption}
+              handleRemoveOption={handleRemoveOption}
+              setQuestions={setQuestions}
+            />
           )}
 
           {question.question_type === "feedback" && (
-            <div>
-              <div className={styles.title}>Описание функции:</div>
-              <input
-                value={question.feature_description || ""}
-                style={{ width: "500px", resize: "both", overflow: "auto" }}
-                onChange={(e) =>
-                  setQuestions((prev) =>
-                    prev.map((q) =>
-                      q.id === question.id
-                        ? { ...q, feature_description: e.target.value }
-                        : q
-                    )
-                  )
-                }
-              />
-            </div>
+            <FeedbackQuestion question={question} setQuestions={setQuestions} />
           )}
+
           <div className={styles.icons}>
             <button
               onClick={() => handleCopyQuestion(question.id)}
