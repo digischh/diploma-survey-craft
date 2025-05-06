@@ -7,18 +7,19 @@ import SurveyPreview from "./preview/SurveyPreview";
 import styles from "./createSurveyPage.module.css";
 import { Divider } from "@mui/material";
 import { AnswerOption, Question } from "../../types/types";
+import { toast } from "react-toastify";
+import HeaderBar from "../headerBar/HeaderBar";
+import { surveyActions } from "../../actions/surveyActions";
 
 const { v4: uuidv4 } = require("uuid");
 
 const SurveyCreatorPage: React.FC = () => {
-  const { surveyId } = useParams<{ surveyId: string }>();
+  const { surveyId = "" } = useParams<{ surveyId: string }>();
   const navigate = useNavigate();
   const [surveyType, setSurveyType] = useState<string>("");
 
-  const [surveyTitle, setSurveyTitle] = useState<string>("Опрос");
-  const [surveyDescription, setSurveyDescription] = useState<string>(
-    "Описание вашего опроса"
-  );
+  const [surveyTitle, setSurveyTitle] = useState<string>("");
+  const [surveyDescription, setSurveyDescription] = useState<string>("");
   const [questions, setQuestions] = useState<Question[]>([]);
   const [questionsPerPage, setQuestionsPerPage] = useState<number>(3);
   const [currentPage, setCurrentPage] = useState<number>(1);
@@ -153,8 +154,10 @@ const SurveyCreatorPage: React.FC = () => {
       console.log("Сохраненные данные:", savedSurvey);
       await saveQuestions(surveyId, questions);
       console.log("Сохранённые вопросы:", questions);
+      toast.success("Опрос успешно сохранен!");
     } catch (error) {
       console.error("Ошибка:", error);
+      toast.error("Произошла ошибка при сохранении вопросов!");
     }
   };
 
@@ -171,9 +174,9 @@ const SurveyCreatorPage: React.FC = () => {
       const surveyData = await response.json();
       console.log("Данные опроса:", surveyData);
 
-      setSurveyTitle(surveyData.title || "Опрос");
+      setSurveyTitle(surveyData.title || "");
       setSurveyType(surveyData.type || "");
-      setSurveyDescription(surveyData.description || "Описание вашего опроса");
+      setSurveyDescription(surveyData.description || "");
 
       const settings = surveyData.settings || {};
       setQuestionsPerPage(settings.questionsPerPage || 3);
@@ -235,10 +238,10 @@ const SurveyCreatorPage: React.FC = () => {
     }
   }, [surveyId]);
 
-  const handleDeleteQuestion = async (id: string) => {
+  const handleDeleteQuestion = async (questionId: string) => {
     try {
       const response = await fetch(
-        `http://localhost:8080/api/questions/${id}`,
+        `http://localhost:8080/api/questions/${questionId}`,
         {
           method: "DELETE",
         }
@@ -248,8 +251,11 @@ const SurveyCreatorPage: React.FC = () => {
         throw new Error("Ошибка при удалении вопроса");
       }
 
-      setQuestions((prev) => prev.filter((q) => q.id !== id));
+      setQuestions((prev) => prev.filter((q) => q.id !== questionId));
+      toast.success("Вопрос успешно удален!");
     } catch (error) {
+      toast.error("Ошибка при удалении вопроса!");
+
       console.error("Ошибка при удалении вопроса:", error);
     }
   };
@@ -302,9 +308,10 @@ const SurveyCreatorPage: React.FC = () => {
       }
 
       setQuestions((prev) => [...prev, copiedQuestion]);
+      toast.success("Вопрос успешно скопирован!");
     } catch (error) {
       console.error("Ошибка:", error);
-      alert("Не удалось скопировать вопрос");
+      toast.success("Не удалось скопировать вопрос");
     }
   };
 
@@ -344,8 +351,24 @@ const SurveyCreatorPage: React.FC = () => {
     if (fileInput) fileInput.value = "";
   };
 
+  const handleCopySurvey = async (id: string) => {
+    await surveyActions.copySurvey(id);
+  };
+
+  const handleDeleteSurvey = async (id: string) => {
+    await surveyActions.deleteSurvey(id);
+    navigate(`/home`);
+  };
+
   return (
     <div>
+      <HeaderBar
+        surveyTitle={surveyTitle}
+        onSave={handleSaveSurvey}
+        onCopy={() => handleCopySurvey(surveyId)}
+        onDelete={() => handleDeleteSurvey(surveyId)}
+        showSurveyControls={true}
+      />
       <div className={styles.buttonList}>
         <button className="primary-button" onClick={() => navigate("/home")}>
           На главную

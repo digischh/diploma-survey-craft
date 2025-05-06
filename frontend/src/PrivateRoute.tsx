@@ -1,14 +1,18 @@
-import React, { ReactNode } from 'react';
-import { Navigate } from 'react-router-dom';
+import { FC, ReactNode } from "react";
+import { Navigate } from "react-router-dom";
 
-interface PrivateRouteProps {
-    children: ReactNode;
-}
+type TPrivateRouteProps = {
+  children: ReactNode;
+};
 
-const PrivateRoute: React.FC<PrivateRouteProps> = ({ children }) => {
-    const userId = localStorage.getItem('userId');
+const PrivateRoute: FC<TPrivateRouteProps> = ({ children }) => {
+  const userID = sessionStorage.getItem("userID");
 
-    return true ? <>{children}</> : <Navigate to="/signin" />;
+  if (!userID) {
+    return <Navigate to={"/signin"} replace />;
+  }
+
+  return <>{children}</>;
 };
 
 export default PrivateRoute;

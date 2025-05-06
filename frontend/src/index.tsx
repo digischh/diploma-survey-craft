@@ -16,6 +16,7 @@ import PrivateRoute from "./PrivateRoute";
 import HomePage from "./components/homePage/HomePage";
 import SurveyCreatorPage from "./components/createSurveyPage/createSurveyPage";
 import SurveyPreviewWrapper from "./components/createSurveyPage/preview/SurveyPreviewWrapper";
+import SurveyResults from "./components/surveyResults/SurveyResults";
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
@@ -24,35 +25,31 @@ const root = ReactDOM.createRoot(
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <App />,
+    element: (
+      <PrivateRoute>
+        <App />
+      </PrivateRoute>
+    ),
     children: [
       {
         path: "",
-        element: <Navigate to="home" />,
+        element: <Navigate to="home" replace />,
       },
       {
         path: "home",
-        element: (
-          <PrivateRoute>
-            <HomePage />
-          </PrivateRoute>
-        ),
+        element: <HomePage />,
       },
       {
         path: "survey/:surveyId",
-        element: (
-          <PrivateRoute>
-            <SurveyCreatorPage />
-          </PrivateRoute>
-        ),
+        element: <SurveyCreatorPage />,
       },
       {
         path: "surveyPreview/:surveyId",
-        element: (
-          <PrivateRoute>
-            <SurveyPreviewWrapper />
-          </PrivateRoute>
-        ),
+        element: <SurveyPreviewWrapper />,
+      },
+      {
+        path: "/surveyResults/:surveyId",
+        element: <SurveyResults />,
       },
     ],
   },
@@ -62,7 +59,7 @@ const router = createBrowserRouter([
     children: [
       {
         path: "",
-        element: <Navigate to="autorizate" />,
+        element: <Navigate to="autorizate" replace />,
       },
       {
         path: "autorizate",

@@ -30,10 +30,8 @@ const SurveyPreviewWrapper = () => {
   const [questions, setQuestions] = useState<Question[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [questionsPerPage, setQuestionsPerPage] = useState<number>(3);
-  const [surveyTitle, setSurveyTitle] = useState<string>("Опрос");
-  const [surveyDescription, setSurveyDescription] = useState<string>(
-    "Описание вашего опроса"
-  );
+  const [surveyTitle, setSurveyTitle] = useState<string>("");
+  const [surveyDescription, setSurveyDescription] = useState<string>("");
 
   const [titleFontSize, setTitleFontSize] = useState<number>(24);
   const [descriptionFontSize, setDescriptionFontSize] = useState<number>(18);
@@ -61,9 +59,7 @@ const SurveyPreviewWrapper = () => {
         console.log("Данные опроса:", surveyData);
 
         setSurveyTitle(surveyData.title || "Опрос");
-        setSurveyDescription(
-          surveyData.description || "Описание вашего опроса"
-        );
+        setSurveyDescription(surveyData.description || "");
 
         const settings = surveyData.settings || {};
         setQuestionsPerPage(settings.questionsPerPage || 3);

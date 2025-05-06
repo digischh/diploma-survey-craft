@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@ant-design/icons": "6.0.0",
     "@emotion/react": "^11.13.3",
     "@emotion/styled": "^11.13.0",
     "@mui/icons-material": "^6.1.5",
@@ -14,8 +15,9 @@
     "@types/node": "^16.18.115",
     "@types/react": "^18.3.12",
     "@types/react-dom": "^18.3.1",
+    "antd": "5.24.9",
+    "axios": "1.9.0",
     "chart.js": "^4.4.5",
-    "chartjs-node-canvas": "^4.1.6",
     "chartjs-to-image": "^1.2.2",
     "docx": "^9.0.2",
     "file-saver": "^2.0.5",
@@ -36,6 +38,7 @@
     "react-router-dom": "^6.27.0",
     "react-scripts": "5.0.1",
     "react-toastify": "^10.0.6",
+    "styled-components": "6.1.17",
     "typescript": "^4.9.5",
     "uuid": "^11.0.3",
     "web-vitals": "^2.1.4"

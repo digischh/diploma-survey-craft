@@ -13,7 +13,7 @@ class SurveyController {
     try {
       const result = await client.query(
         `INSERT INTO Survey (id, user_id, title, type, settings) VALUES ($1, $2, $3, $4, $5) RETURNING *`,
-        [id, user_id, "Без названия", type, {}]
+        [id, user_id, "", type, {}]
       );
       res.status(201).json(result.rows[0]);
     } catch (err) {
@@ -533,6 +533,31 @@ class SurveyController {
       await client.query("ROLLBACK");
       console.error("Ошибка при сохранении ответов:", err);
       res.status(500).json({ message: "Ошибка при сохранении ответов" });
+    } finally {
+      client.release();
+    }
+  }
+
+  // Получение ответов опроса
+  async getSurveyResults(req, res) {
+    const { surveyId } = req.params;
+    const client = await this.db.connect();
+
+    try {
+      const result = await client.query(
+        `
+        SELECT q.question_text as question_text, sa.answer
+        FROM survey_answers sa
+        JOIN question q ON sa.question_id = q.id
+        WHERE sa.survey_id = $1::uuid
+      `,
+        [surveyId]
+      );
+
+      res.status(200).json(result.rows);
+    } catch (error) {
+      console.error("Ошибка при получении результатов:", error);
+      res.status(500).json({ message: "Ошибка при получении результатов" });
     } finally {
       client.release();
     }

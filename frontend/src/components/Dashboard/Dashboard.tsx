@@ -190,7 +190,7 @@ const Dashboard: React.FC = () => {
             id: uuidv4(),
             type,
             data: sampleData,
-            name: diagramName || "Без названия",
+            name: diagramName || "",
             xAxisTitle: columnName || "Ось X",
             yAxisTitle: 'Количество',
             title: `${filters.column} ${filters.value}`,

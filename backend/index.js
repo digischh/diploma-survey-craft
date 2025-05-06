@@ -7,6 +7,7 @@ const personRoutes = require("./routes/person.routes");
 const PersonController = require("./controller/person.controller");
 const surveyRoutes = require("./routes/survey.routes");
 const SurveyController = require("./controller/survey.controller");
+const routes = require("./routes/routes");
 const app = express();
 
 app.use(express.json({ limit: "50mb" }));
@@ -21,6 +22,8 @@ const pool = new Pool({
   password: "postgres",
   port: 5432,
 });
+
+app.use("/api", routes(pool));
 
 const personController = new PersonController(pool);
 app.use("/api", personRoutes(personController));

@@ -70,12 +70,12 @@ const SurveySettings: React.FC<SurveySettingsProps> = ({
             value={surveyTitle}
             onChange={(e) => setSurveyTitle(e.target.value)}
             style={{ width: "300px", resize: "both", overflow: "auto" }}
+            placeholder="Название опроса"
           />
         </div>
         <div
           className={styles.field}
-          style={{ alignItems: "center", justifyContent: "center" }}
-        >
+          style={{ alignItems: "center", justifyContent: "center" }}>
           <div className={styles.title}>Размер текста</div>
           <input
             type="number"
@@ -96,8 +96,7 @@ const SurveySettings: React.FC<SurveySettingsProps> = ({
             {showTitleColorPicker && (
               <div
                 className={styles.colorPickerWrapper}
-                ref={titleColorPickerRef}
-              >
+                ref={titleColorPickerRef}>
                 <SketchPicker
                   color={titleBackgroundColor}
                   onChangeComplete={(color) =>
@@ -117,12 +116,12 @@ const SurveySettings: React.FC<SurveySettingsProps> = ({
             value={surveyDescription}
             onChange={(e) => setSurveyDescription(e.target.value)}
             style={{ width: "300px", resize: "both", overflow: "auto" }}
+            placeholder="Описание опроса"
           />
         </div>
         <div
           className={styles.field}
-          style={{ alignItems: "center", justifyContent: "center" }}
-        >
+          style={{ alignItems: "center", justifyContent: "center" }}>
           <div className={styles.title}>Размер текста</div>
           <input
             type="number"
@@ -145,8 +144,7 @@ const SurveySettings: React.FC<SurveySettingsProps> = ({
             {showDescriptionColorPicker && (
               <div
                 className={styles.colorPickerWrapper}
-                ref={descriptionColorPickerRef}
-              >
+                ref={descriptionColorPickerRef}>
                 <SketchPicker
                   color={descriptionBackgroundColor}
                   onChangeComplete={(color) =>

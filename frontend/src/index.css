@@ -106,6 +106,7 @@ option:hover {
 }
 
 .primary-button:hover {
+  background-color: var(--accent);
   opacity: 0.7;
   cursor: pointer;
 }

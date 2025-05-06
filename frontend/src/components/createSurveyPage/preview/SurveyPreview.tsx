@@ -4,6 +4,7 @@ import { AnswerFeedback, Question } from "../../../types/types";
 import TestQuestionPreview from "./TestQuestionPreview";
 import NpsQuestionPreview from "./NpsQuestionPreview";
 import FeedbackQuestionPreview from "./FeedbackQuestionPreview";
+import { toast } from "react-toastify";
 
 interface SurveyPreviewProps {
   surveyId: string | undefined;
@@ -88,7 +89,6 @@ const SurveyPreview: React.FC<SurveyPreviewProps> = ({
 
   const handleSubmit = async () => {
     try {
-      console.log("testAnswers", testAnswers, ratings, feedbackAnswers);
       const preparedAnswers = questions
         .map((q, idx) => {
           if (q.question_type === "nps") {
@@ -115,6 +115,7 @@ const SurveyPreview: React.FC<SurveyPreviewProps> = ({
           }
         })
         .filter(Boolean);
+      console.log("preparedAnswers", preparedAnswers);
 
       const response = await fetch("http://localhost:8080/api/answers", {
         method: "POST",
@@ -127,8 +128,10 @@ const SurveyPreview: React.FC<SurveyPreviewProps> = ({
       if (!response.ok) {
         throw new Error("Ошибка при отправке ответов");
       }
+      toast.success("Ответ успешно сохранен!");
     } catch (error) {
       console.error("Ошибка отправки:", error);
+      toast.error("Ошибка отправки!");
     } finally {
     }
   };

@@ -48,5 +48,9 @@ module.exports = (surveyController) => {
     surveyController.saveSurveyAnswers(req, res);
   });
 
+  router.get("/survey/:surveyId/results", (req, res) => {
+    surveyController.getSurveyResults(req, res);
+  });
+
   return router;
 };
