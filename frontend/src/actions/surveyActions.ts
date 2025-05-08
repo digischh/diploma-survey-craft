@@ -10,7 +10,6 @@ export const surveyActions = {
   ) {
     try {
       const data = await surveyApi.createSurvey(userId, type);
-      toast.success("Опрос успешно создан");
       navigate(`/survey/${data.id}`);
       return data;
     } catch (error) {

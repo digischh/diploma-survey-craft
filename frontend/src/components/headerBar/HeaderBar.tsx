@@ -1,6 +1,6 @@
 import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
 import { FC, useState } from "react";
-import Logout from "../profilePage/Logout";
+import { Logout } from "../profilePage/components";
 import { useNavigate } from "react-router-dom";
 import HomeIcon from "@mui/icons-material/Home";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
@@ -11,18 +11,22 @@ import { Tooltip } from "../../shared";
 
 type THeaderBarProps = {
   surveyTitle?: string;
+  onResults?: () => void;
   onSave?: () => void;
   onCopy?: (id: string) => Promise<void>;
   onDelete?: (id: string) => Promise<void>;
   showSurveyControls?: boolean;
+  showHomeIcon?: boolean;
 };
 
-const HeaderBar: FC<THeaderBarProps> = ({
+export const HeaderBar: FC<THeaderBarProps> = ({
   surveyTitle,
+  onResults,
   onSave,
   onCopy,
   onDelete,
   showSurveyControls = false,
+  showHomeIcon = false,
 }) => {
   const [menuAvatarOpen, setMenuAvatarOpen] = useState(false);
   const [menuSettingsOpen, setMenuSettingsOpen] = useState(false);
@@ -51,6 +55,11 @@ const HeaderBar: FC<THeaderBarProps> = ({
 
   const settingsMenuItems = [
     {
+      key: "answer",
+      label: "Сформировать дашборд",
+      onClick: onResults as MenuProps["onClick"],
+    },
+    {
       key: "copy",
       label: "Копировать опрос",
       onClick: onCopy as MenuProps["onClick"],
@@ -65,21 +74,21 @@ const HeaderBar: FC<THeaderBarProps> = ({
 
   return (
     <HeaderWrapper align="center" justify="space-between">
-      {showSurveyControls && (
+      {showHomeIcon && (
         <Flex align="center" gap={16}>
           <Tooltip title="На главную">
             <Button
               type="text"
               shape="circle"
-              icon={<HomeIcon fontSize="medium" />}
+              icon={<HomeIcon fontSize="large" />}
               onClick={handleHomeClick}
             />
           </Tooltip>
-          <STitle level={5}>{surveyTitle || "Новый опрос"}</STitle>
+          <STitle>{surveyTitle || "Новый опрос"}</STitle>
         </Flex>
       )}
 
-      <Flex align="center" gap={16} style={{ marginLeft: "auto" }}>
+      <Flex align="center" gap={30} style={{ marginLeft: "auto" }}>
         {showSurveyControls && (
           <Flex gap={4}>
             <Button
@@ -125,4 +134,3 @@ const HeaderBar: FC<THeaderBarProps> = ({
     </HeaderWrapper>
   );
 };
-export default HeaderBar;

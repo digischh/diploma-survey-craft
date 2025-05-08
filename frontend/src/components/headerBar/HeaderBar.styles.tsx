@@ -1,8 +1,8 @@
-import { Button, Flex, Typography } from "antd";
+import { Button, Flex } from "antd";
 import styled from "styled-components";
 
 export const HeaderWrapper = styled(Flex)`
-  padding: 6px;
+  padding: 15px 25px;
   background-color: #ffffff;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   position: sticky;
@@ -22,9 +22,9 @@ export const IconButton = styled(Button)`
   }
 `;
 
-export const STitle = styled(Typography.Title)`
+export const STitle = styled.div`
   margin: 0 !important;
-  font-size: 18px;
+  font-size: 20px;
   font-weight: 500;
   white-space: nowrap;
   overflow: hidden;

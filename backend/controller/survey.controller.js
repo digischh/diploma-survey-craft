@@ -69,11 +69,11 @@ class SurveyController {
       const result = await client.query(
         `
             SELECT 
-                s.id AS survey_id,
-                s.title AS survey_title,
-                s.description AS survey_description,
-                s.type AS survey_type,
-                s.settings AS survey_settings
+                s.id,
+                s.title,
+                s.description,
+                s.type,
+                s.settings
             FROM 
                 public.survey s
             JOIN 

@@ -1,3 +1,4 @@
+import "antd/dist/reset.css";
 import React from "react";
 import ReactDOM from "react-dom/client";
 import "./index.css";
@@ -6,23 +7,26 @@ import {
   Navigate,
   RouterProvider,
 } from "react-router-dom";
-import Dashboard from "./components/Dashboard/Dashboard";
 import App from "./App";
-import TablesList from "./components/tablesList/TablesList";
-import Registration from "./components/profilePage/Registration";
-import Login from "./components/profilePage/Login";
-import StartPage from "./components/profilePage/StartPage";
+import { Registration } from "./components/profilePage/components";
+import { StartPage } from "./components/profilePage";
 import PrivateRoute from "./PrivateRoute";
-import HomePage from "./components/homePage/HomePage";
+import { HomePage } from "./components/homePage";
 import SurveyCreatorPage from "./components/createSurveyPage/createSurveyPage";
 import SurveyPreviewWrapper from "./components/createSurveyPage/preview/SurveyPreviewWrapper";
 import SurveyResults from "./components/surveyResults/SurveyResults";
+import EmbedSurvey from "./components/embedSurvey/EmbedSurvey";
+import { Login } from "./components/profilePage/components";
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
 );
 
 const router = createBrowserRouter([
+  {
+    path: "/embed/:surveyId",
+    element: <EmbedSurvey />,
+  },
   {
     path: "/",
     element: (
