@@ -10,7 +10,7 @@ interface SurveyPreviewProps {
   surveyId: string | undefined;
   surveyTitle: string;
   surveyDescription: string;
-  questions: Question[];
+  questionsPreview: Question[];
   currentPage: number;
   totalPages: number;
   textColor: string;
@@ -28,11 +28,11 @@ interface SurveyPreviewProps {
   handlePrevPage: () => void;
 }
 
-const SurveyPreview: React.FC<SurveyPreviewProps> = ({
+export const SurveyPreview: React.FC<SurveyPreviewProps> = ({
   surveyId,
   surveyTitle,
   surveyDescription,
-  questions,
+  questionsPreview,
   currentPage,
   totalPages,
   textColor,
@@ -50,7 +50,7 @@ const SurveyPreview: React.FC<SurveyPreviewProps> = ({
   handlePrevPage,
 }) => {
   const [ratings, setRatings] = useState<number[]>(
-    Array(questions.length).fill(5)
+    Array(questionsPreview.length).fill(5)
   );
   const [feedbackAnswers, setFeedbackAnswers] = useState<{
     [index: number]: { positive?: number; negative?: number };
@@ -89,7 +89,7 @@ const SurveyPreview: React.FC<SurveyPreviewProps> = ({
 
   const handleSubmit = async () => {
     try {
-      const preparedAnswers = questions
+      const preparedAnswers = questionsPreview
         .map((q, idx) => {
           if (q.question_type === "nps") {
             return {
@@ -164,7 +164,7 @@ const SurveyPreview: React.FC<SurveyPreviewProps> = ({
         {surveyDescription}
       </div>
 
-      {questions.map((question, idx) => (
+      {questionsPreview.map((question, idx) => (
         <div key={idx} className={styles.questionBlock}>
           {question.question_type === "nps" && (
             <>
@@ -252,5 +252,3 @@ const SurveyPreview: React.FC<SurveyPreviewProps> = ({
     </div>
   );
 };
-
-export default SurveyPreview;

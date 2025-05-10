@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { SketchPicker } from "react-color";
 import styles from "./SurveyCustomization.module.css";
 import DeleteIcon from "@mui/icons-material/Delete";
+import { TSurveyCustomizationProps } from "../../../types/componentsTypes";
 
 interface SurveyCustomizationProps {
   fontSize: number;
@@ -18,7 +19,7 @@ interface SurveyCustomizationProps {
   handleBackgroundRemove: () => void;
 }
 
-const SurveyCustomization: React.FC<SurveyCustomizationProps> = ({
+export const SurveyCustomization: React.FC<TSurveyCustomizationProps> = ({
   fontSize,
   setFontSize,
   textColor,
@@ -166,5 +167,3 @@ const SurveyCustomization: React.FC<SurveyCustomizationProps> = ({
     </div>
   );
 };
-
-export default SurveyCustomization;

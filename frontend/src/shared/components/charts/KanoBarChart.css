@@ -1,0 +1,69 @@
+.kano-bar-chart {
+  margin: 20px;
+}
+
+.kano-feature-row {
+  display: flex;
+  margin-bottom: 20px;
+}
+
+.kano-feature-title {
+  margin-right: 6px;
+  max-width: 100px;
+  text-overflow: ellipsis;
+}
+
+.kano-bar {
+  display: flex;
+  height: 30px;
+  width: 100%;
+}
+
+.kano-bar-segment {
+  text-align: center;
+  line-height: 30px;
+  color: black;
+  font-size: 12px;
+}
+
+.kano-color-0 {
+  background-color: blue;
+}
+
+.kano-color-1 {
+  background-color: orange;
+}
+
+.kano-color-2 {
+  background-color: yellow;
+}
+
+.kano-color-3 {
+  background-color: red;
+}
+
+.kano-color-4 {
+  background-color: purple;
+}
+
+.kano-color-5 {
+  background-color: gray;
+}
+
+.kano-legend {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.kano-legend-item {
+  display: flex;
+  align-items: center;
+}
+
+.kano-legend-color {
+  width: 20px;
+  height: 20px;
+  margin-right: 10px;
+}

@@ -14,16 +14,18 @@ import "./DashboardChartStyles.css";
 import { DashboardContextMenu } from "./DashboardContextMenu";
 import { AddChartMenu } from "./AddChartMenu";
 import ExportPopover from "./ExportPopover";
-import { ChartData, TableData } from "../../types";
+import { ChartData, GraphChartData, Survey, TableChartData } from "../../types";
 import { formatSurveyResults } from "../../shared/utils/survey";
-import { renderChart } from "../../shared/components/Chart";
+import { RenderChart } from "../../shared/components/RenderChart";
 
 ChartJS.register(...registerables);
 
 const Dashboard = ({
+  survey,
   results,
   handleDownload,
 }: {
+  survey: Survey;
   results: any[];
   handleDownload: () => Promise<void>;
 }) => {
@@ -35,22 +37,19 @@ const Dashboard = ({
   } | null>(null);
 
   const [clipboard, setClipboard] = useState<ChartData | null>(null);
-  const [clipboardTable, setClipboardTable] = useState<TableData | null>(null);
-
   const [pasteMenu, setPasteMenu] = useState(false);
   const chartRefs = useRef<{ [key: string]: HTMLCanvasElement | null }>({});
   const [diagramName, setDiagramName] = useState("");
   const [columnName, setColumnName] = useState("");
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [currentChartId, setCurrentChartId] = useState(null);
-  const [uniqueValues, setUniqueValues] = useState([]);
-  const [counts, setCounts] = useState([]);
 
   const [columns, setColumns] = useState<string[]>([]);
-  const [title, setTitle] = useState<string>("");
-
-  const addChart = (type: "bar" | "pie" | "doughnut" | "table") => {
+  const addChart = (
+    type: "bar" | "pie" | "doughnut" | "table" | "kano" | "kanoBar" | "moscow"
+  ) => {
     const formattedData = formatSurveyResults(results);
+    console.log("formattedDataformattedData", formattedData, results);
 
     if (type === "table") {
       const tableData: ChartData = {
@@ -60,7 +59,7 @@ const Dashboard = ({
           item.question_text,
           ...item.answers,
           ...item.counts.map(String),
-        ]), 
+        ]),
         name: diagramName || "Таблица результатов",
         xAxisTitle: "",
         yAxisTitle: "",
@@ -68,6 +67,30 @@ const Dashboard = ({
       } as unknown as ChartData;
 
       setCharts((prevCharts) => [...prevCharts, tableData]);
+    } else if (type === "kano" || type === "kanoBar") {
+      const kanoData: ChartData = {
+        id: uuidv4(),
+        type,
+        data: results,
+        xAxisTitle: "",
+        yAxisTitle: "",
+        title: "Kaнo-анализ",
+        name: "Kaнo-анализ",
+      } as unknown as ChartData;
+
+      setCharts((prevCharts) => [...prevCharts, kanoData]);
+    } else if (type === "moscow") {
+      const moscowData: ChartData = {
+        id: uuidv4(),
+        type: "moscow",
+        data: results,
+        xAxisTitle: "",
+        yAxisTitle: "",
+        title: "MoSCoW-анализ",
+        name: "MoSCoW-анализ",
+      } as unknown as ChartData;
+
+      setCharts((prevCharts) => [...prevCharts, moscowData]);
     } else {
       formattedData.forEach((formattedResult) => {
         const newChart: ChartData = {
@@ -101,53 +124,47 @@ const Dashboard = ({
     setContextMenuDaschboard({ anchorEl: e.currentTarget, chartId });
   };
 
+  function isGraphChartData(chart: ChartData): chart is GraphChartData {
+    return (
+      chart.type !== "table" &&
+      chart.type !== "kano" &&
+      chart.type !== "kanoBar" &&
+      chart.type !== "moscow"
+    );
+  }
+
   const handleCopyClick = (e: React.MouseEvent, chartId: string) => {
     e.stopPropagation();
     const chartToCopy = charts.find((chart) => chart.id === chartId);
-    if (chartToCopy && chartToCopy.type === "table") {
-      const tableToCopy = results;
 
-      if (tableToCopy) {
-        const tableData: any[] = [];
+    if (!chartToCopy) return;
 
-        tableToCopy.forEach((result) => {
-          const answers = Array.isArray(result.answer)
-            ? result.answer
-            : [result.answer];
+    if (chartToCopy.type === "table") {
+      setClipboard({
+        id: uuidv4(),
+        type: "table",
+        name: diagramName,
+        data: chartToCopy.data,
+        title: chartToCopy.title,
+      } as TableChartData);
 
-          answers.forEach((answer: string) => {
-            const existing = tableData.find(
-              (item) =>
-                item.question_text === result.question_text &&
-                item.answer === answer
-            );
+      toast.success("Таблица скопирована в буфер обмена");
+      setPasteMenu(true);
+    } else if (chartToCopy.type === "kano" || chartToCopy.type === "moscow") {
+      setClipboard({
+        id: uuidv4(),
+        type: chartToCopy.type,
+        name: diagramName,
+        data: chartToCopy.data,
+        title: chartToCopy.title,
+      } as ChartData);
 
-            if (existing) {
-              existing.count++;
-            } else {
-              tableData.push({
-                question_text: result.question_text,
-                answer: answer,
-                count: 1,
-              });
-            }
-          });
-        });
-
-        setClipboardTable({
-          id: uuidv4(),
-          type: "table",
-          name: diagramName,
-          data: tableData,
-        });
-
-        toast.success("Таблица скопирована в буфер обмена");
-        setPasteMenu(true);
-      }
-    } else {
+      toast.success("Диаграмма Kaнo скопирована в буфер обмена");
+      setPasteMenu(true);
+    } else if (isGraphChartData(chartToCopy)) {
       const canvas = chartRefs.current[chartId] as HTMLCanvasElement;
 
-      if (canvas && chartToCopy) {
+      if (canvas) {
         setClipboard({
           id: uuidv4(),
           type: chartToCopy.type,
@@ -163,7 +180,8 @@ const Dashboard = ({
           xAxisTitle: chartToCopy.xAxisTitle,
           yAxisTitle: chartToCopy.yAxisTitle,
           title: chartToCopy.title,
-        });
+        } as ChartData);
+
         toast.success("Диаграмма скопирована в буфер обмена");
         setPasteMenu(true);
       }
@@ -185,53 +203,34 @@ const Dashboard = ({
     if (clipboard) {
       setCharts((prevCharts) => [...prevCharts, clipboard]);
       toast.success("Диаграмма вставлена из буфера обмена");
-    } else if (clipboardTable) {
-      console.log("clipboardTable", Array.isArray(clipboardTable.data[0]));
-      if (Array.isArray(clipboardTable.data)) {
-        const tableChartData: ChartData = {
-          id: clipboardTable.id,
-          type: "table",
-          name: clipboardTable.name,
-          data: clipboardTable.data,
-          xAxisTitle: "",
-          yAxisTitle: "",
-          title: "",
-        } as unknown as ChartData;
-        setCharts((prevCharts) => [...prevCharts, tableChartData]);
-
-        toast.success("Таблица вставлена из буфера обмена");
-      }
-    } else {
-      toast.warn("Нечего вставлять");
     }
-
     setPasteMenu(false);
   };
 
   const handleSaveChanges = () => {
-    setCharts((prevCharts) =>
-      prevCharts.map((chart) =>
-        chart.id === currentChartId
-          ? {
-              ...chart,
-              name: diagramName,
-              xAxisTitle: columnName,
-              yAxisTitle: "Количество",
-              title: title,
-              data: {
-                ...chart.data,
-                labels: uniqueValues,
-                datasets: [
-                  {
-                    ...chart.data.datasets[0],
-                    data: counts,
-                  },
-                ],
-              },
-            }
-          : chart
-      )
-    );
+    // setCharts((prevCharts) =>
+    //   prevCharts.map((chart) =>
+    //     chart.type !== "table" && chart.id === currentChartId
+    //       ? {
+    //           ...chart,
+    //           name: diagramName,
+    //           xAxisTitle: columnName,
+    //           yAxisTitle: "Количество",
+    //           title: title,
+    //           data: {
+    //             ...chart.data,
+    //             labels: uniqueValues,
+    //             datasets: [
+    //               {
+    //                 ...chart.data.datasets[0],
+    //                 data: counts,
+    //               },
+    //             ],
+    //           },
+    //         }
+    //       : chart
+    //   )
+    // );
     toast.success("Изменения сохранены");
     setIsEditModalOpen(false);
   };
@@ -274,9 +273,7 @@ const Dashboard = ({
 
     reader.readAsText(file);
   };
-  console.log("results", results);
 
-  console.log("charts", charts);
   return (
     <div className={styles.appContainer}>
       <div className={styles.fixedButtonContainer}>
@@ -326,7 +323,11 @@ const Dashboard = ({
             key={chart.id}
             id={chart.id}
             className="chartCard dashboard"
-            data-grid={{ x: 0, y: index * 2, w: 6, h: 7 }}
+            data-grid={
+              chart.type === "kano" || chart.type === "kanoBar"
+                ? { x: 0, y: index * 2, w: 10, h: 7 }
+                : { x: 0, y: index * 2, w: 6, h: 7 }
+            }
             onContextMenu={(e) => handleChartContextMenu(e, chart.id)}>
             <div className={`${styles.dragHandle} drag-icon`}>
               <DragIndicatorIcon />
@@ -334,7 +335,11 @@ const Dashboard = ({
             <div className="ChartName">{diagramName}</div>
             <div className="chart-container">
               <div className="chart">
-                {renderChart(chart, results, chartRefs)}
+                <RenderChart
+                  chart={chart}
+                  results={results}
+                  chartRefs={chartRefs}
+                />
               </div>
             </div>
             <div
@@ -363,6 +368,7 @@ const Dashboard = ({
       )}
 
       <AddChartMenu
+        type={survey.type}
         anchorEl={anchorEl}
         open={Boolean(anchorEl)}
         onClose={() => setAnchorEl(null)}

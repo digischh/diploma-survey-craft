@@ -4,18 +4,10 @@ import { MdContentCopy, MdDeleteOutline } from "react-icons/md";
 import { Question } from "../../../types";
 import TestQuestion from "./TestQuestion";
 import FeedbackQuestion from "./FeedbackQuestion";
+import { TQuestionListProps } from "../../../types/componentsTypes";
 const { v4: uuidv4 } = require("uuid");
 
-interface QuestionListProps {
-  questions: Question[];
-  setQuestions: React.Dispatch<React.SetStateAction<Question[]>>;
-  handleAddQuestion: () => void;
-  handleDeleteQuestion: (id: string) => void;
-  handleCopyQuestion: (id: string) => void;
-  handleEditQuestion: (id: string, updatedData: Question[]) => void;
-}
-
-const QuestionList: React.FC<QuestionListProps> = ({
+export const QuestionList: React.FC<TQuestionListProps> = ({
   questions,
   setQuestions,
   handleAddQuestion,
@@ -126,5 +118,3 @@ const QuestionList: React.FC<QuestionListProps> = ({
     </div>
   );
 };
-
-export default QuestionList;

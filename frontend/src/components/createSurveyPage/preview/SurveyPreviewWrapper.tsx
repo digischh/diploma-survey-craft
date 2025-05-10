@@ -1,28 +1,7 @@
 import { useParams } from "react-router-dom";
-import SurveyPreview from "./SurveyPreview";
 import { useEffect, useState } from "react";
 import { Question } from "../../../types/types";
-
-interface SurveyData {
-  surveyTitle: string;
-  surveyDescription: string;
-  questions: Question[];
-  currentPage: number;
-  totalPages: number;
-  textColor: string;
-  backgroundColor: string;
-  backgroundImage: string;
-  logo: string;
-  fontSize: number;
-  titleFontSize: number;
-  descriptionFontSize: number;
-  titleBackgroundColor: string;
-  descriptionBackgroundColor: string;
-  buttonColor: string;
-  buttonTextColor: string;
-  handleNextPage: () => void;
-  handlePrevPage: () => void;
-}
+import { SurveyPreview } from "./SurveyPreview";
 
 const SurveyPreviewWrapper = () => {
   const { surveyId } = useParams();
@@ -140,7 +119,7 @@ const SurveyPreviewWrapper = () => {
       surveyId={surveyId}
       surveyTitle={surveyTitle}
       surveyDescription={surveyDescription}
-      questions={currentQuestions}
+      questionsPreview={currentQuestions}
       currentPage={currentPage}
       totalPages={totalPages}
       textColor={textColor}
@@ -154,12 +133,8 @@ const SurveyPreviewWrapper = () => {
       descriptionBackgroundColor={descriptionBackgroundColor}
       buttonColor={buttonColor}
       buttonTextColor={textColor}
-      handleNextPage={() =>
-        setCurrentPage((prev) => (prev < totalPages ? prev + 1 : prev))
-      }
-      handlePrevPage={() =>
-        setCurrentPage((prev) => (prev > 1 ? prev - 1 : prev))
-      }
+      handleNextPage={handleNextPage}
+      handlePrevPage={handlePrevPage}
     />
   );
 };

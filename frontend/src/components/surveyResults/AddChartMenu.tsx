@@ -3,13 +3,17 @@ import { Popover } from "@mui/material";
 import styles from "./dashboard.module.css";
 
 interface AddChartMenuProps {
+  type: string;
   anchorEl: HTMLElement | null;
   open: boolean;
   onClose: () => void;
-  onAddChart: (type: "bar" | "pie" | "doughnut" | "table") => void;
+  onAddChart: (
+    type: "bar" | "pie" | "doughnut" | "table" | "kano" | "kanoBar" | "moscow"
+  ) => void;
 }
 
 export const AddChartMenu: React.FC<AddChartMenuProps> = ({
+  type,
   anchorEl,
   open,
   onClose,
@@ -48,6 +52,25 @@ export const AddChartMenu: React.FC<AddChartMenuProps> = ({
           onClick={() => onAddChart("table")}>
           Таблица
         </button>
+        {type === "feedback" && (
+          <>
+            <button
+              className={styles.menuButton}
+              onClick={() => onAddChart("kano")}>
+              Таблица по модели Kaнo
+            </button>
+            <button
+              className={styles.menuButton}
+              onClick={() => onAddChart("moscow")}>
+              Таблица по модели MoSCoW
+            </button>
+            <button
+              className={styles.menuButton}
+              onClick={() => onAddChart("kanoBar")}>
+              Диаграмма по модели Kaнo
+            </button>
+          </>
+        )}
       </div>
     </Popover>
   );

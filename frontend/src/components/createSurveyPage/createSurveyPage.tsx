@@ -1,15 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import SurveySettings from "./settings/SurveySettings";
-import SurveyCustomization from "./customization/SurveyCustomization";
-import SurveyQuestions from "./questionList/QuestionList";
-import SurveyPreview from "./preview/SurveyPreview";
-import styles from "./createSurveyPage.module.css";
-import { Divider } from "@mui/material";
 import { AnswerOption, Question } from "../../types/types";
 import { toast } from "react-toastify";
-import HeaderBar from "../headerBar/HeaderBar";
+import { HeaderBar } from "../headerBar";
 import { surveyActions } from "../../actions/surveyActions";
+import { handleViewResults } from "../../actions/surveyNavigation";
+import { Tabs } from "antd";
+import { ExportTab } from "./ExportTab";
+import { SettingsTab } from "./SettingsTab";
+import { TabsWrapper } from "./createSurveyPage.styles";
 
 const { v4: uuidv4 } = require("uuid");
 
@@ -260,6 +259,25 @@ const SurveyCreatorPage: React.FC = () => {
     }
   };
 
+  const handleAddQuestion = () => {
+    console.log("surveyType", surveyType);
+    setQuestions((prev) => [
+      ...prev,
+      {
+        id: uuidv4(),
+        question_text: "",
+        question_type: surveyType,
+        isNew: true,
+      },
+    ]);
+  };
+
+  const handleEditQuestion = (id: string, updatedData: any) => {
+    setQuestions((prev) =>
+      prev.map((q) => (q.id === id ? { ...q, ...updatedData } : q))
+    );
+  };
+
   const handleCopyQuestion = async (id: string) => {
     try {
       const questionToCopy = questions.find((q) => q.id === id);
@@ -360,27 +378,31 @@ const SurveyCreatorPage: React.FC = () => {
     navigate(`/home`);
   };
 
+  const handleNextPage = () => {
+    setCurrentPage((prev) => (prev < totalPages ? prev + 1 : prev));
+  };
+  const handlePrevPage = () => {
+    setCurrentPage((prev) => (prev > 1 ? prev - 1 : prev));
+  };
+
+  const [activeTab, setActiveTab] = useState("settings");
+  const { TabPane } = Tabs;
+
   return (
-    <div>
+    <>
       <HeaderBar
         surveyTitle={surveyTitle}
+        onResults={() => handleViewResults(surveyId, navigate)}
         onSave={handleSaveSurvey}
         onCopy={() => handleCopySurvey(surveyId)}
         onDelete={() => handleDeleteSurvey(surveyId)}
         showSurveyControls={true}
+        showHomeIcon={true}
       />
-      <div className={styles.buttonList}>
-        <button className="primary-button" onClick={() => navigate("/home")}>
-          На главную
-        </button>
-        <button className="primary-button" onClick={handleSaveSurvey}>
-          Сохранить
-        </button>
-      </div>
-      <div className={styles.container}>
-        <div className={styles.mainContent}>
-          <div className={styles.leftSide}>
-            <SurveySettings
+      <TabsWrapper>
+        <Tabs activeKey={activeTab} onChange={setActiveTab} centered>
+          <TabPane tab="Настройки" key="settings">
+            <SettingsTab
               surveyTitle={surveyTitle}
               setSurveyTitle={setSurveyTitle}
               titleFontSize={titleFontSize}
@@ -395,9 +417,6 @@ const SurveyCreatorPage: React.FC = () => {
               setDescriptionBackgroundColor={setDescriptionBackgroundColor}
               questionsPerPage={questionsPerPage}
               setQuestionsPerPage={setQuestionsPerPage}
-            />
-            <Divider />
-            <SurveyCustomization
               fontSize={fontSize}
               setFontSize={setFontSize}
               textColor={textColor}
@@ -410,62 +429,29 @@ const SurveyCreatorPage: React.FC = () => {
               handleLogoRemove={handleLogoRemove}
               handleBackgroundUpload={handleBackgroundUpload}
               handleBackgroundRemove={handleBackgroundRemove}
-            />
-            <Divider />
-            <SurveyQuestions
               questions={questions}
               setQuestions={setQuestions}
-              handleAddQuestion={() =>
-                setQuestions((prev) => [
-                  ...prev,
-                  {
-                    id: uuidv4(),
-                    question_text: "",
-                    question_type: surveyType,
-                    isNew: true,
-                  },
-                ])
-              }
               handleDeleteQuestion={handleDeleteQuestion}
               handleCopyQuestion={handleCopyQuestion}
-              handleEditQuestion={(id, updatedData) =>
-                setQuestions((prev) =>
-                  prev.map((q) => (q.id === id ? { ...q, ...updatedData } : q))
-                )
-              }
-            />
-          </div>
-
-          <div className={styles.rightSide}>
-            <SurveyPreview
+              handleAddQuestion={handleAddQuestion}
+              handleEditQuestion={handleEditQuestion}
               surveyId={surveyId}
-              surveyTitle={surveyTitle}
-              surveyDescription={surveyDescription}
-              questions={currentQuestions}
+              questionsPreview={currentQuestions}
               currentPage={currentPage}
               totalPages={totalPages}
-              textColor={textColor}
-              backgroundColor={backgroundColor}
               backgroundImage={backgroundImage}
               logo={logo}
-              fontSize={fontSize}
-              titleFontSize={titleFontSize}
-              descriptionFontSize={descriptionFontSize}
-              titleBackgroundColor={titleBackgroundColor}
-              descriptionBackgroundColor={descriptionBackgroundColor}
-              buttonColor={buttonColor}
-              buttonTextColor={textColor}
-              handleNextPage={() =>
-                setCurrentPage((prev) => (prev < totalPages ? prev + 1 : prev))
-              }
-              handlePrevPage={() =>
-                setCurrentPage((prev) => (prev > 1 ? prev - 1 : prev))
-              }
+              handleNextPage={handleNextPage}
+              handlePrevPage={handlePrevPage}
             />
-          </div>
-        </div>
-      </div>
-    </div>
+          </TabPane>
+
+          <TabPane tab="Экспорт" key="export">
+            <ExportTab />
+          </TabPane>
+        </Tabs>
+      </TabsWrapper>
+    </>
   );
 };
 

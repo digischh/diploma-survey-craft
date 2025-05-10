@@ -1,25 +1,9 @@
 import React, { useState, useRef, useEffect } from "react";
 import { SketchPicker } from "react-color";
 import styles from "./SurveySettings.module.css";
+import { TSurveySettingsProps } from "../../../types/componentsTypes";
 
-interface SurveySettingsProps {
-  surveyTitle: string;
-  setSurveyTitle: React.Dispatch<React.SetStateAction<string>>;
-  titleFontSize: number;
-  setTitleFontSize: React.Dispatch<React.SetStateAction<number>>;
-  titleBackgroundColor: string;
-  setTitleBackgroundColor: React.Dispatch<React.SetStateAction<string>>;
-  surveyDescription: string;
-  setSurveyDescription: React.Dispatch<React.SetStateAction<string>>;
-  descriptionFontSize: number;
-  setDescriptionFontSize: React.Dispatch<React.SetStateAction<number>>;
-  descriptionBackgroundColor: string;
-  setDescriptionBackgroundColor: React.Dispatch<React.SetStateAction<string>>;
-  questionsPerPage: number;
-  setQuestionsPerPage: React.Dispatch<React.SetStateAction<number>>;
-}
-
-const SurveySettings: React.FC<SurveySettingsProps> = ({
+export const SurveySettings: React.FC<TSurveySettingsProps> = ({
   surveyTitle,
   setSurveyTitle,
   titleFontSize,
@@ -169,5 +153,3 @@ const SurveySettings: React.FC<SurveySettingsProps> = ({
     </div>
   );
 };
-
-export default SurveySettings;

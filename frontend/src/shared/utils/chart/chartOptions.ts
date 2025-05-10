@@ -1,4 +1,4 @@
-import { ChartData } from "../../types";
+import { ChartData } from "../../../types";
 import { ChartOptions } from "chart.js";
 
 export const getChartOptions = (chartType: any, chart: ChartData) => {

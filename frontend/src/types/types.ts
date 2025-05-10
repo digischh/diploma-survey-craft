@@ -1,4 +1,4 @@
-export interface Question {
+export type Question = {
   id: string;
   question_text: string;
   question_type: string;
@@ -12,7 +12,7 @@ export interface Question {
   answer_type?: "single" | "multiple" | "text";
   feature_description?: string;
   isNew?: boolean;
-}
+};
 
 export interface AnswerOption {
   id?: string;
@@ -32,34 +32,9 @@ export type QuestionFeedback = {
   answers: AnswerFeedback[];
 };
 
-// export interface ChartData {
-//   id: string;
-//   type: "bar" | "pie" | "table" | "doughnut";
-//   data: {
-//     labels: string[];
-//     datasets: {
-//       label: string;
-//       data: number[];
-//       backgroundColor: string[];
-//     }[];
-//   };
-//   name: string;
-//   xAxisTitle: string;
-//   yAxisTitle: string;
-//   title: string;
-// }
-
-export type TableData = {
+export type GraphChartData = {
   id: string;
-  type: "table";
-  name: string;
-  data: string[][];
-};
-
-export interface ChartData {
-  id: string;
-  type: "bar" | "pie" | "table" | "doughnut";
-  name: string;
+  type: "bar" | "pie" | "doughnut";
   data: {
     labels: string[];
     datasets: {
@@ -68,14 +43,36 @@ export interface ChartData {
       backgroundColor: string[];
     }[];
   };
+  name: string;
   xAxisTitle: string;
   yAxisTitle: string;
   title: string;
-}
+};
 
-export type ClipboardData =
-  | ChartData
-  | { id: string; type: "table"; name: string; data: TableData };
+export type TableChartData = {
+  id: string;
+  type: "table";
+  name: string;
+  data: string[][];
+  xAxisTitle?: string;
+  yAxisTitle?: string;
+  title: string;
+};
+
+export type KanoChartData = {
+  id: string;
+  type: "kano" | "moscow" | "kanoBar";
+  name: string;
+  data: {
+    choices: { title: string }[];
+    categoryMap: Record<string, number[]>;
+  };
+  xAxisTitle?: string;
+  yAxisTitle?: string;
+  title: string;
+};
+
+export type ChartData = GraphChartData | TableChartData | KanoChartData;
 
 export type Survey = {
   id: string;
@@ -84,8 +81,6 @@ export type Survey = {
   description?: string;
   type: string;
   settings?: SurveySettings;
-  created_at?: string;
-  updated_at?: string;
 };
 
 interface SurveySettings {
@@ -101,3 +96,9 @@ interface SurveySettings {
   logo?: string;
   backgroundImage?: string;
 }
+
+export type KanoAnswer = {
+  title: string;
+  positive: number;
+  negative: number;
+};
